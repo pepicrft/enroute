@@ -186,6 +186,31 @@ Enroute is **early**. We use it ourselves, but read
 **There is no backwards compatibility between `0.x` releases.** Especially the
 storage format can change in any release, requiring a clean slate and re-push.
 
+## Build and test insights
+
+[`enroute/enroute` on Tuist](https://tuist.dev/enroute/enroute) is public.
+`tuist.toml` connects this workspace to that project. Rust support is experimental
+and requires a Tuist CLI build that includes `tuist cargo`. Use the Rust version
+in `rust-toolchain.toml` and install
+[`cargo-nextest`](https://nexte.st/docs/installation/) for test reporting.
+
+```sh
+tuist auth login
+tuist cargo build --workspace --locked
+tuist cargo nextest run --workspace --locked
+```
+
+These commands report build, compilation-cache, and test results. The compiler
+cache is automatic, but it supports only eligible registry leaf libraries, not
+all Rust compilations. A warm Cargo target directory can skip compilation
+without consulting Tuist's cache.
+
+For GitHub Actions, first connect the repository to the Tuist project and grant
+build and test jobs `id-token: write` to authenticate through OIDC. Local runs
+can read the remote cache and write the local cache. Remote cache uploads require
+a push to a protected GitHub branch. Do not store authentication tokens in the
+repository.
+
 ## How can I contribute?
 
 Pull requests are disabled. Coding agents make it too easy to send a large,
